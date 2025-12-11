@@ -1,0 +1,8 @@
+,dtype
+participant_id,int64
+gender,object
+age,int64
+time_spent_hours,float64
+score,int64
+score_pct,float64
+participant_old_id,object

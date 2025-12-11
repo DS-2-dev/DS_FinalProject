@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+"""Plot evaluation results for subgroup models.
+
+Loads models from `models/subgroups/` and the cleaned dataset, runs stratified
+CV predictions (using a fresh pipeline) to compute ROC and PR curves, confusion
+matrices, and saves coefficient plots for logistic models retrained on full
+subgroup. Outputs are saved to `outputs/models/plots/{age}_{gender}/`.
+
+Run: python src/plot_models.py
+"""
+import os
+import re
+import joblib
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from sklearn.metrics import (roc_curve, auc, precision_recall_curve,
+                             confusion_matrix, ConfusionMatrixDisplay)
+
+
+MODEL_DIR = os.path.join('models', 'subgroups')
+
+
+def ensure(path):
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
+def parse_model_filename(fname):
+    # Expect pattern: subgroup_{age_label}_{gender}_logistic.joblib
+    m = re.match(r'subgroup_(.+)_(Male|Female)_logistic\.joblib', fname)
+    if not m:
+        return None
+    return m.group(1), m.group(2)
+
+
+def prepare_X(sub):
+    X = sub[['time_spent_hours', 'age']].copy()
+    X['time_spent_hours'] = X['time_spent_hours'].fillna(X['time_spent_hours'].median())
+    X['age'] = X['age'].fillna(X['age'].median())
+    return X
+
+
+def plot_roc_pr_confusion(age_label, gender, X, y, save_dir):
+    pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression(max_iter=500))])
+
+    # Determine the minimum class count to set n_splits for StratifiedKFold
+    class_counts = pd.Series(y).value_counts()
+    min_class_count = int(class_counts.min()) if len(class_counts) > 0 else 0
+
+    if min_class_count < 2:
+        # Not enough samples in one class for CV; fit on full data and compute in-sample metrics (optimistic)
+        pipe.fit(X, y)
+        try:
+            y_proba = pipe.predict_proba(X)[:, 1]
+        except Exception:
+            y_proba = np.zeros(len(y))
+        y_pred = pipe.predict(X)
+        cv_used = False
+    else:
+        n_splits = min(5, min_class_count)
+        skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
+        y_proba = cross_val_predict(pipe, X, y, cv=skf, method='predict_proba')[:, 1]
+        y_pred = cross_val_predict(pipe, X, y, cv=skf, method='predict')
+        cv_used = True
+
+    # ROC
+    try:
+        fpr, tpr, _ = roc_curve(y, y_proba)
+        roc_auc = auc(fpr, tpr)
+    except Exception:
+        fpr, tpr, roc_auc = [0, 1], [0, 1], float('nan')
+    fig, ax = plt.subplots()
+    ax.plot(fpr, tpr, label=f'AUC = {roc_auc:.3f}')
+    ax.plot([0, 1], [0, 1], linestyle='--', color='gray')
+    ax.set_xlabel('False Positive Rate')
+    ax.set_ylabel('True Positive Rate')
+    ax.set_title(f'ROC: {age_label} {gender}')
+    ax.legend()
+    fig.savefig(os.path.join(save_dir, 'roc.png'), dpi=150)
+    plt.close(fig)
+
+    # Precision-Recall
+    try:
+        precision, recall, _ = precision_recall_curve(y, y_proba)
+        pr_auc = auc(recall, precision)
+    except Exception:
+        precision, recall, pr_auc = [1, 0], [0, 1], float('nan')
+    fig, ax = plt.subplots()
+    ax.plot(recall, precision, label=f'AUC = {pr_auc:.3f}')
+    ax.set_xlabel('Recall')
+    ax.set_ylabel('Precision')
+    ax.set_title(f'Precision-Recall: {age_label} {gender}')
+    ax.legend()
+    fig.savefig(os.path.join(save_dir, 'pr.png'), dpi=150)
+    plt.close(fig)
+
+    # Confusion matrix
+    cm = confusion_matrix(y, y_pred)
+    fig, ax = plt.subplots()
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+    disp.plot(ax=ax)
+    ax.set_title(f'Confusion Matrix: {age_label} {gender}')
+    fig.savefig(os.path.join(save_dir, 'confusion_matrix.png'), dpi=150)
+    plt.close(fig)
+
+    return {'roc_auc': float(roc_auc), 'pr_auc': float(pr_auc), 'cv_used': bool(cv_used)}
+
+
+def coef_plot(age_label, gender, X, y, save_dir):
+    # Fit on full subgroup to get coefficients
+    pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression(max_iter=500))])
+    pipe.fit(X, y)
+    coef = pipe.named_steps['clf'].coef_.ravel()
+    features = X.columns.tolist()
+    fig, ax = plt.subplots()
+    sns.barplot(x=coef, y=features, orient='h', ax=ax)
+    ax.set_title(f'Logistic coefficients (trained on full subgroup): {age_label} {gender}')
+    fig.savefig(os.path.join(save_dir, 'coefficients.png'), dpi=150)
+    plt.close(fig)
+
+
+def main():
+    root = os.path.abspath('.')
+    cleaned = pd.read_csv(os.path.join(root, 'data', 'cleaned_dataset.csv'))
+
+    # Recompute age_range mapping consistent with earlier scripts
+    def age_to_range(a):
+        try:
+            a = float(a)
+        except Exception:
+            return None
+        if a <= 10:
+            return '0-10'
+        if 10 < a <= 15:
+            return '10-15'
+        if 15 < a <= 20:
+            return '16-20'
+        if 20 < a <= 25:
+            return '20-25'
+        if 25 < a <= 30:
+            return '26-30'
+        if 30 < a <= 40:
+            return '31-40'
+        if 40 < a <= 50:
+            return '40-50'
+        if 50 < a <= 60:
+            return '51-60'
+        if 60 < a <= 80:
+            return '61-80'
+        return None
+
+    cleaned['age_range'] = cleaned['age'].apply(age_to_range)
+
+    results = []
+    if not os.path.exists(MODEL_DIR):
+        print('No subgroup models directory found at', MODEL_DIR)
+        return
+
+    for fname in os.listdir(MODEL_DIR):
+        parsed = parse_model_filename(fname)
+        if parsed is None:
+            continue
+        age_label, gender = parsed
+        sub = cleaned[(cleaned['age_range'] == age_label) & (cleaned['gender'].str.lower() == gender.lower())]
+        if sub.empty:
+            print('No data for', age_label, gender)
+            continue
+
+        X = prepare_X(sub)
+        y = (sub['score_pct'] <= 0.6).astype(int)
+
+        save_dir = os.path.join(root, 'outputs', 'models', 'plots', f'{age_label}_{gender}')
+        ensure(save_dir)
+
+        print('Plotting for', age_label, gender, 'n=', len(sub))
+        metrics = plot_roc_pr_confusion(age_label, gender, X, y, save_dir)
+        coef_plot(age_label, gender, X, y, save_dir)
+
+        metrics.update({'age_range': age_label, 'gender': gender, 'n': len(sub)})
+        results.append(metrics)
+
+    if results:
+        dfm = pd.DataFrame(results)
+        outpath = os.path.join(root, 'outputs', 'models', 'plots', 'subgroup_model_summary.csv')
+        dfm.to_csv(outpath, index=False)
+        print('Wrote subgroup model summary to', outpath)
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,12 @@
+This pooled OLS summary file is superseded by the full-sample results in
+`pooled_ols_allresponses_summary.txt` and `pooled_ols_allresponses_coefficients.csv`.
+
+Reason: earlier analyses used a smaller complete-case sample; the repository
+now uses the full cleaned dataset (`data/cleaned_dataset.csv`, n = 102).
+
+Please refer to the full-sample artifacts under `outputs/analysis/`:
+- `pooled_ols_allresponses_summary.txt`  (complete textual summary for n=102)
+- `pooled_ols_allresponses_coefficients.csv`  (coefficients and SEs)
+
+If you need the old small-sample summary preserved, see the Git history for
+previous commits.
