@@ -89,4 +89,4 @@ python src/run_all.py
 
 ## Website
 
-`docs/index.html` is a static black-and-white page that reads `docs/data.json`. It is served by GitHub Pages: **Settings → Pages**, branch `main`, folder `/docs`. The font is ABC Areal when it is installed on the viewer's machine; otherwise the page falls back to Arial. To preview it locally: `cd docs && python -m http.server`.
+`docs/index.html` is a static black-and-white page that reads `docs/data.json`. It is served by GitHub Pages: **Settings → Pages**, branch `main`, folder `/docs`. The font is Inter, loaded from Google Fonts. To preview it locally: `cd docs && python -m http.server`.
