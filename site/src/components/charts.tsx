@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   Area,
   CartesianGrid,
@@ -13,7 +13,7 @@ import {
   ZAxis,
 } from 'recharts'
 
-import { ChartContainer, ChartTooltip, type ChartConfig } from '@/components/ui/chart'
+import { ChartContainer, type ChartConfig } from '@/components/ui/chart'
 import { COLOR, LABEL, num, pct, type Gender, type GenderStats, type Participant } from '@/data'
 
 const config = {
@@ -31,11 +31,35 @@ interface TipRow {
   age?: number
 }
 
-function PointTooltip({ active, payload }: { active?: boolean; payload?: { payload: TipRow }[] }) {
-  const row = active ? payload?.find((p) => p.payload?.gender)?.payload : undefined
-  if (!row) return null
+interface Pinned {
+  x: number
+  y: number
+  row: TipRow
+}
+
+/** Tooltip state pinned to the hovered point; Recharts' own tooltip follows the cursor. */
+function usePinnedTip() {
+  const [tip, setTip] = useState<Pinned | null>(null)
+  const handlers = {
+    onMouseEnter: (point: any) => setTip({ x: point.cx, y: point.cy, row: point.payload }),
+    onMouseLeave: () => setTip(null),
+  }
+  return [tip, handlers] as const
+}
+
+function PinnedTooltip({ tip }: { tip: Pinned | null }) {
+  if (!tip) return null
+  const { row } = tip
+  const below = tip.y < 72
   return (
-    <div className="grid min-w-36 gap-1 rounded-lg border bg-background px-2.5 py-1.5 text-xs shadow-xl">
+    <div
+      className="pointer-events-none absolute z-10 grid min-w-36 gap-1 rounded-lg border bg-background px-2.5 py-1.5 text-xs whitespace-nowrap shadow-xl"
+      style={{
+        left: tip.x,
+        top: tip.y,
+        transform: below ? 'translate(-50%, 14px)' : 'translate(-50%, calc(-100% - 14px))',
+      }}
+    >
       <div className="flex items-center gap-2 text-muted-foreground">
         <span className="size-2 rounded-full" style={{ background: COLOR[row.gender] }} />
         {LABEL[row.gender]}
@@ -61,8 +85,10 @@ export function ScoreDots({ gender, participants, stats }: { gender: Gender; par
       .map((p) => ({ ...p, y: (seen[p.x] = (seen[p.x] ?? 0) + 1) }))
   }, [gender, participants])
   const half = (1.96 * stats.score_sd) / Math.sqrt(stats.n)
+  const [tip, hover] = usePinnedTip()
 
   return (
+    <div className="relative">
     <ChartContainer config={config} className="aspect-auto h-44 w-full">
       <ScatterChart margin={{ top: 8, right: 12, bottom: 0, left: 12 }}>
         <XAxis type="number" dataKey="x" domain={[0.25, 0.9]} ticks={[0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]}
@@ -73,11 +99,12 @@ export function ScoreDots({ gender, participants, stats }: { gender: Gender; par
         <ReferenceLine segment={[{ x: stats.score_mean, y: 0.4 }, { x: stats.score_mean, y: 12 }]} stroke="var(--foreground)" strokeWidth={1.5} />
         <ReferenceLine segment={[{ x: stats.score_mean - half, y: -0.3 }, { x: stats.score_mean + half, y: -0.3 }]}
           stroke="var(--foreground)" strokeWidth={4} strokeLinecap="round" />
-        <ChartTooltip cursor={false} isAnimationActive={false} content={<PointTooltip />} />
-        <Scatter data={points} fill={COLOR[gender]} stroke="var(--background)" strokeWidth={2} shape="circle" isAnimationActive={false} />
+        <Scatter data={points} fill={COLOR[gender]} stroke="var(--background)" strokeWidth={2} shape="circle" isAnimationActive={false} {...hover} />
         <ZAxis range={[64, 64]} />
       </ScatterChart>
     </ChartContainer>
+    <PinnedTooltip tip={tip} />
+    </div>
   )
 }
 
@@ -112,8 +139,10 @@ export function TimeScatter({ gender, participants }: { gender: Gender; particip
   const fit = useMemo(() => linearFit(rows), [rows])
   const inside = rows.filter((r) => r.time_spent_hours <= XMAX).map((r) => ({ ...r, x: r.time_spent_hours, y: r.score_pct }))
   const outside = rows.filter((r) => r.time_spent_hours > XMAX).map((r) => ({ ...r, x: XMAX, y: r.score_pct }))
+  const [tip, hover] = usePinnedTip()
 
   return (
+    <div className="relative">
     <ChartContainer config={config} className="aspect-auto h-72 w-full">
       <ComposedChart data={fit} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
         <CartesianGrid vertical={false} />
@@ -124,17 +153,18 @@ export function TimeScatter({ gender, participants }: { gender: Gender; particip
         <YAxis type="number" dataKey="y" domain={[0.25, 0.9]} ticks={[0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]}
           tickFormatter={(v) => pct(v)} tick={axisTick} tickLine={false} axisLine={false} width={40} />
         <ZAxis type="number" dataKey="age" domain={[6, 74]} range={[40, 340]} />
-        <Area dataKey="band" stroke="none" fill={COLOR[gender]} fillOpacity={0.12} isAnimationActive={false} tooltipType="none" activeDot={false} />
-        <Line dataKey="yhat" stroke={COLOR[gender]} strokeWidth={2} dot={false} activeDot={false} isAnimationActive={false} tooltipType="none" />
-        <Scatter data={inside} fill={COLOR[gender]} fillOpacity={0.85} stroke="var(--background)" strokeWidth={1.5} isAnimationActive={false} />
+        <Area dataKey="band" stroke="none" fill={COLOR[gender]} fillOpacity={0.12} isAnimationActive={false} activeDot={false} />
+        <Line dataKey="yhat" stroke={COLOR[gender]} strokeWidth={2} dot={false} activeDot={false} isAnimationActive={false} />
+        <Scatter data={inside} fill={COLOR[gender]} fillOpacity={0.85} stroke="var(--background)" strokeWidth={1.5} isAnimationActive={false} {...hover} />
         {outside.length > 0 && (
-          <Scatter data={outside} fill={COLOR[gender]} shape="triangle" isAnimationActive={false}>
+          <Scatter data={outside} fill={COLOR[gender]} shape="triangle" isAnimationActive={false} {...hover}>
             <LabelList dataKey="time_spent_hours" position="left" formatter={(v) => `${v} h`}
               style={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
           </Scatter>
         )}
-        <ChartTooltip cursor={false} isAnimationActive={false} shared={false} content={<PointTooltip />} />
       </ComposedChart>
     </ChartContainer>
+    <PinnedTooltip tip={tip} />
+    </div>
   )
 }
