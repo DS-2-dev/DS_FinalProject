@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Export analysis results to `docs/data.json` for the GitHub Pages site.
+"""Export analysis results to `site/public/data.json` for the results site.
 
-The site itself is `docs/index.html`; it reads this file at load time.
+The site is a Vite + React app in `site/`; `npm run build` there bundles it,
+with this file, into `docs/` for GitHub Pages.
 
 Run: python src/build_site.py
 """
@@ -38,7 +39,7 @@ def main():
         'subgroup_models': records(metrics),
         'overall_model': records(pd.read_csv(OUTPUTS / 'models' / 'overall_model_metrics.csv'))[0],
     }
-    out = ROOT / 'docs' / 'data.json'
+    out = ROOT / 'site' / 'public' / 'data.json'
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(data, indent=1))
     print('Wrote site data to', out)

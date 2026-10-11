@@ -60,12 +60,13 @@ src/
   modeling.py                overall classifier -> models/, outputs/models/
   subgroup_modeling.py       per-subgroup classifiers -> models/subgroups/
   plot_models.py             ROC / PR / confusion / coefficient plots
-  build_site.py              exports results to docs/data.json
+  build_site.py              exports results to site/public/data.json
 notebooks/
   01_data.ipynb              the survey, cleaning, distributions
   02_analysis.ipynb          main question, men vs women, robustness, conclusion
   03_subgroups.ipynb         classifiers and subgroup plots
-docs/                        GitHub Pages site (index.html + data.json)
+site/                        results website source (React + shadcn/ui)
+docs/                        built website, served by GitHub Pages
 ```
 
 `outputs/` and `models/` are generated. The notebooks only read pipeline outputs, and are committed without outputs.
@@ -89,4 +90,10 @@ python src/run_all.py
 
 ## Website
 
-`docs/index.html` is a static black-and-white page that reads `docs/data.json`. It is served by GitHub Pages: **Settings → Pages**, branch `main`, folder `/docs`. The font is Inter, loaded from Google Fonts. To preview it locally: `cd docs && python -m http.server`.
+The results site is a Vite + React + Tailwind app using [shadcn/ui](https://ui.shadcn.com) components and charts, in `site/`. It reads `site/public/data.json` (written by `src/build_site.py`) and builds into `docs/`, which GitHub Pages serves (**Settings → Pages**, branch `main`, folder `/docs`).
+
+```bash
+python src/run_all.py          # refresh site/public/data.json
+cd site && npm install && npm run build   # rebuild docs/
+npm run dev                    # local preview
+```

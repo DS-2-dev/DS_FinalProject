@@ -1,0 +1,1147 @@
+{
+ "summary": {
+  "n": 102,
+  "n_imputed_time": 1,
+  "gender_counts": {
+   "Male": 58,
+   "Female": 44
+  },
+  "score_pct_mean": 0.5838235294117647,
+  "score_pct_sd": 0.12842568539279062,
+  "time_hours_median": 21.0,
+  "age_median": 21.0,
+  "pearson": {
+   "r": 0.03127242259786561,
+   "pval": 0.7550254935677436
+  },
+  "spearman": {
+   "r": 0.11335991112596408,
+   "pval": 0.2566142183598124
+  },
+  "ols": {
+   "r2": 0.06435647069511419,
+   "cv_rmse": 0.13268587143665844,
+   "time_spent_hours": {
+    "coef": -8.24862599281002e-05,
+    "se": 0.0013219267130700426,
+    "pval": 0.9502454798688255,
+    "ci_low": -0.0026734150077467973,
+    "ci_high": 0.0025084424878905973
+   },
+   "gender_male": {
+    "coef": 0.0481736345878784,
+    "se": 0.024133198999137167,
+    "pval": 0.04591692432233725,
+    "ci_low": 0.0008734337178314747,
+    "ci_high": 0.09547383545792532
+   },
+   "age": {
+    "coef": -0.001656299770246762,
+    "se": 0.001201111940774154,
+    "pval": 0.16790337807184808,
+    "ci_low": -0.00401043591556511,
+    "ci_high": 0.0006978363750715863
+   },
+   "intercept": {
+    "coef": 0.5980756521840211,
+    "se": 0.0459545380182171,
+    "pval": 1.01193396684411e-38,
+    "ci_low": 0.508006412742139,
+    "ci_high": 0.6881448916259033
+   }
+  },
+  "gender_gap": {
+   "male_minus_female_pts": 5.148902821316625,
+   "welch_t": 2.08632221175042,
+   "welch_p": 0.03952087499376434,
+   "mannwhitney_p": 0.04422933269298333,
+   "cohens_d": 0.4120706611621361
+  },
+  "by_gender": [
+   {
+    "gender": "Male",
+    "n": 58,
+    "score_mean": 0.6060344828,
+    "score_sd": 0.1354257699,
+    "score_median": 0.625,
+    "pct_above_chance": 0.6896551724,
+    "hours_median": 23.5,
+    "age_median": 21.0,
+    "pearson_r": -0.0048367969,
+    "pearson_p": 0.9712550351,
+    "spearman_rho": 0.1522120604,
+    "spearman_p": 0.2540200863,
+    "effect_per_10h_pts": -0.3095374876,
+    "ci_low_pts": -3.909456028,
+    "ci_high_pts": 3.2903810528,
+    "time_pval": 0.8661689545,
+    "age_coef_pts_per_year": -0.3923646792,
+    "age_pval": 0.0009258569,
+    "age_spearman_rho": -0.1276847075,
+    "age_spearman_p": 0.3394934533,
+    "n_over_40": 4,
+    "age_coef_under40_pts": -0.4589382555,
+    "age_pval_under40": 0.470724285,
+    "r2": 0.0717617561
+   },
+   {
+    "gender": "Female",
+    "n": 44,
+    "score_mean": 0.5545454545,
+    "score_sd": 0.1135157923,
+    "score_median": 0.55,
+    "pct_above_chance": 0.5454545455,
+    "hours_median": 20.0,
+    "age_median": 20.0,
+    "pearson_r": -0.0113415009,
+    "pearson_p": 0.9417523931,
+    "spearman_rho": 0.0285934715,
+    "spearman_p": 0.8538212736,
+    "effect_per_10h_pts": -0.0177828872,
+    "ci_low_pts": -2.6811409973,
+    "ci_high_pts": 2.645575223,
+    "time_pval": 0.9895588469,
+    "age_coef_pts_per_year": -0.055868587,
+    "age_pval": 0.735115839,
+    "age_spearman_rho": -0.0387976701,
+    "age_spearman_p": 0.8025564948,
+    "n_over_40": 5,
+    "age_coef_under40_pts": 0.0789652285,
+    "age_pval_under40": 0.8014050421,
+    "r2": 0.0056150016
+   }
+  ],
+  "robustness": [
+   {
+    "spec": "Main model",
+    "n": 102,
+    "r2": 0.0643564707,
+    "effect_per_10h_pts": -0.0824862599,
+    "ci_low_pts": -2.6734150077,
+    "ci_high_pts": 2.5084424879,
+    "pval": 0.9502454799
+   },
+   {
+    "spec": "Without answers over 100 h",
+    "n": 101,
+    "r2": 0.0916853966,
+    "effect_per_10h_pts": 1.0962487043,
+    "ci_low_pts": -0.5837802515,
+    "ci_high_pts": 2.7762776601,
+    "pval": 0.2009283008
+   },
+   {
+    "spec": "Log of hours",
+    "n": 102,
+    "r2": 0.0642267947,
+    "effect_per_10h_pts": -0.0117855716,
+    "ci_low_pts": -1.3896801673,
+    "ci_high_pts": 1.366109024,
+    "pval": 0.9866247328
+   },
+   {
+    "spec": "Without the imputed row",
+    "n": 101,
+    "r2": 0.0690862498,
+    "effect_per_10h_pts": -0.0812566788,
+    "ci_low_pts": -2.6735923506,
+    "ci_high_pts": 2.5110789931,
+    "pval": 0.9510127723
+   },
+   {
+    "spec": "Time only (no controls)",
+    "n": 102,
+    "r2": 0.0009779644,
+    "effect_per_10h_pts": 0.2190172383,
+    "ci_low_pts": -2.422140369,
+    "ci_high_pts": 2.8601748456,
+    "pval": 0.8708889371
+   }
+  ]
+ },
+ "participants": [
+  {
+   "gender": "Male",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 43.0,
+   "score": 8,
+   "score_pct": 0.4
+  },
+  {
+   "gender": "Female",
+   "age": 30,
+   "age_range": "26-30",
+   "time_spent_hours": 20.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 20.0,
+   "score": 8,
+   "score_pct": 0.4
+  },
+  {
+   "gender": "Male",
+   "age": 16,
+   "age_range": "16-20",
+   "time_spent_hours": 50.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Male",
+   "age": 25,
+   "age_range": "20-25",
+   "time_spent_hours": 42.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 15.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Male",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 21.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Male",
+   "age": 23,
+   "age_range": "20-25",
+   "time_spent_hours": 50.0,
+   "score": 16,
+   "score_pct": 0.8
+  },
+  {
+   "gender": "Female",
+   "age": 23,
+   "age_range": "20-25",
+   "time_spent_hours": 30.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Male",
+   "age": 23,
+   "age_range": "20-25",
+   "time_spent_hours": 8.0,
+   "score": 9,
+   "score_pct": 0.45
+  },
+  {
+   "gender": "Male",
+   "age": 25,
+   "age_range": "20-25",
+   "time_spent_hours": 60.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 20,
+   "age_range": "16-20",
+   "time_spent_hours": 20.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Female",
+   "age": 26,
+   "age_range": "26-30",
+   "time_spent_hours": 63.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Female",
+   "age": 19,
+   "age_range": "16-20",
+   "time_spent_hours": 28.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Female",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 40.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 19,
+   "age_range": "16-20",
+   "time_spent_hours": 40.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Male",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 5.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Male",
+   "age": 19,
+   "age_range": "16-20",
+   "time_spent_hours": 12.0,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Male",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 4.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Female",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 25.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 20,
+   "age_range": "16-20",
+   "time_spent_hours": 130.0,
+   "score": 7,
+   "score_pct": 0.35
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 25.0,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Male",
+   "age": 23,
+   "age_range": "20-25",
+   "time_spent_hours": 20.0,
+   "score": 15,
+   "score_pct": 0.75
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 40.0,
+   "score": 15,
+   "score_pct": 0.75
+  },
+  {
+   "gender": "Male",
+   "age": 21,
+   "age_range": "20-25",
+   "time_spent_hours": 14.0,
+   "score": 7,
+   "score_pct": 0.35
+  },
+  {
+   "gender": "Female",
+   "age": 21,
+   "age_range": "20-25",
+   "time_spent_hours": 18.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 30.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Male",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 70.0,
+   "score": 16,
+   "score_pct": 0.8
+  },
+  {
+   "gender": "Male",
+   "age": 23,
+   "age_range": "20-25",
+   "time_spent_hours": 6.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Male",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 32.5,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 55.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Male",
+   "age": 20,
+   "age_range": "16-20",
+   "time_spent_hours": 30.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 19,
+   "age_range": "16-20",
+   "time_spent_hours": 50.0,
+   "score": 8,
+   "score_pct": 0.4
+  },
+  {
+   "gender": "Male",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 12.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Male",
+   "age": 20,
+   "age_range": "16-20",
+   "time_spent_hours": 20.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Female",
+   "age": 19,
+   "age_range": "16-20",
+   "time_spent_hours": 20.0,
+   "score": 8,
+   "score_pct": 0.4
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 30.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 19,
+   "age_range": "16-20",
+   "time_spent_hours": 20.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 21,
+   "age_range": "20-25",
+   "time_spent_hours": 21.0,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Male",
+   "age": 21,
+   "age_range": "20-25",
+   "time_spent_hours": 30.0,
+   "score": 16,
+   "score_pct": 0.8
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 25.0,
+   "score": 16,
+   "score_pct": 0.8
+  },
+  {
+   "gender": "Male",
+   "age": 20,
+   "age_range": "16-20",
+   "time_spent_hours": 40.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Female",
+   "age": 23,
+   "age_range": "20-25",
+   "time_spent_hours": 21.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Male",
+   "age": 27,
+   "age_range": "26-30",
+   "time_spent_hours": 22.0,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Male",
+   "age": 13,
+   "age_range": "10-15",
+   "time_spent_hours": 0.1666666667,
+   "score": 16,
+   "score_pct": 0.8
+  },
+  {
+   "gender": "Female",
+   "age": 19,
+   "age_range": "16-20",
+   "time_spent_hours": 30.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 21,
+   "age_range": "20-25",
+   "time_spent_hours": 10.0,
+   "score": 9,
+   "score_pct": 0.45
+  },
+  {
+   "gender": "Male",
+   "age": 41,
+   "age_range": "40-50",
+   "time_spent_hours": 1.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Female",
+   "age": 25,
+   "age_range": "20-25",
+   "time_spent_hours": 50.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Male",
+   "age": 23,
+   "age_range": "20-25",
+   "time_spent_hours": 25.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Female",
+   "age": 29,
+   "age_range": "26-30",
+   "time_spent_hours": 15.0,
+   "score": 8,
+   "score_pct": 0.4
+  },
+  {
+   "gender": "Female",
+   "age": 34,
+   "age_range": "31-40",
+   "time_spent_hours": 30.0,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Female",
+   "age": 6,
+   "age_range": "0-10",
+   "time_spent_hours": 10.0,
+   "score": 7,
+   "score_pct": 0.35
+  },
+  {
+   "gender": "Female",
+   "age": 28,
+   "age_range": "26-30",
+   "time_spent_hours": 30.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Male",
+   "age": 42,
+   "age_range": "40-50",
+   "time_spent_hours": 30.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Female",
+   "age": 27,
+   "age_range": "26-30",
+   "time_spent_hours": 24.0,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Male",
+   "age": 56,
+   "age_range": "51-60",
+   "time_spent_hours": 16.0,
+   "score": 9,
+   "score_pct": 0.45
+  },
+  {
+   "gender": "Male",
+   "age": 36,
+   "age_range": "31-40",
+   "time_spent_hours": 15.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 32,
+   "age_range": "31-40",
+   "time_spent_hours": 10.0,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Female",
+   "age": 54,
+   "age_range": "51-60",
+   "time_spent_hours": 35.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 33,
+   "age_range": "31-40",
+   "time_spent_hours": 21.0,
+   "score": 6,
+   "score_pct": 0.3
+  },
+  {
+   "gender": "Female",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 5.0,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Male",
+   "age": 21,
+   "age_range": "20-25",
+   "time_spent_hours": 20.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 24,
+   "age_range": "20-25",
+   "time_spent_hours": 25.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Female",
+   "age": 20,
+   "age_range": "16-20",
+   "time_spent_hours": 35.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 10.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 25.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 50.0,
+   "score": 17,
+   "score_pct": 0.85
+  },
+  {
+   "gender": "Male",
+   "age": 21,
+   "age_range": "20-25",
+   "time_spent_hours": 25.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Male",
+   "age": 21,
+   "age_range": "20-25",
+   "time_spent_hours": 40.0,
+   "score": 17,
+   "score_pct": 0.85
+  },
+  {
+   "gender": "Male",
+   "age": 20,
+   "age_range": "16-20",
+   "time_spent_hours": 9.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 62,
+   "age_range": "61-80",
+   "time_spent_hours": 21.0,
+   "score": 9,
+   "score_pct": 0.45
+  },
+  {
+   "gender": "Female",
+   "age": 57,
+   "age_range": "51-60",
+   "time_spent_hours": 35.0,
+   "score": 7,
+   "score_pct": 0.35
+  },
+  {
+   "gender": "Female",
+   "age": 67,
+   "age_range": "61-80",
+   "time_spent_hours": 10.0,
+   "score": 15,
+   "score_pct": 0.75
+  },
+  {
+   "gender": "Female",
+   "age": 38,
+   "age_range": "31-40",
+   "time_spent_hours": 20.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 16,
+   "age_range": "16-20",
+   "time_spent_hours": 4.0,
+   "score": 8,
+   "score_pct": 0.4
+  },
+  {
+   "gender": "Male",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 20.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Male",
+   "age": 22,
+   "age_range": "20-25",
+   "time_spent_hours": 40.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Female",
+   "age": 16,
+   "age_range": "16-20",
+   "time_spent_hours": 4.0,
+   "score": 15,
+   "score_pct": 0.75
+  },
+  {
+   "gender": "Female",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 10.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Female",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 14.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Male",
+   "age": 16,
+   "age_range": "16-20",
+   "time_spent_hours": 30.0,
+   "score": 15,
+   "score_pct": 0.75
+  },
+  {
+   "gender": "Female",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 20.0,
+   "score": 8,
+   "score_pct": 0.4
+  },
+  {
+   "gender": "Male",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 21.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Male",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 3.5,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Female",
+   "age": 15,
+   "age_range": "10-15",
+   "time_spent_hours": 4.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 15,
+   "age_range": "10-15",
+   "time_spent_hours": 25.0,
+   "score": 14,
+   "score_pct": 0.7
+  },
+  {
+   "gender": "Female",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 21.0,
+   "score": 9,
+   "score_pct": 0.45
+  },
+  {
+   "gender": "Female",
+   "age": 16,
+   "age_range": "16-20",
+   "time_spent_hours": 21.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Male",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 40.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 74,
+   "age_range": "61-80",
+   "time_spent_hours": 10.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Female",
+   "age": 15,
+   "age_range": "10-15",
+   "time_spent_hours": 38.5,
+   "score": 11,
+   "score_pct": 0.55
+  },
+  {
+   "gender": "Female",
+   "age": 14,
+   "age_range": "10-15",
+   "time_spent_hours": 4.0,
+   "score": 8,
+   "score_pct": 0.4
+  },
+  {
+   "gender": "Female",
+   "age": 17,
+   "age_range": "16-20",
+   "time_spent_hours": 36.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Male",
+   "age": 18,
+   "age_range": "16-20",
+   "time_spent_hours": 14.0,
+   "score": 13,
+   "score_pct": 0.65
+  },
+  {
+   "gender": "Female",
+   "age": 9,
+   "age_range": "0-10",
+   "time_spent_hours": 1.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 16,
+   "age_range": "16-20",
+   "time_spent_hours": 17.0,
+   "score": 16,
+   "score_pct": 0.8
+  },
+  {
+   "gender": "Male",
+   "age": 16,
+   "age_range": "16-20",
+   "time_spent_hours": 56.0,
+   "score": 10,
+   "score_pct": 0.5
+  },
+  {
+   "gender": "Male",
+   "age": 26,
+   "age_range": "26-30",
+   "time_spent_hours": 16.0,
+   "score": 12,
+   "score_pct": 0.6
+  },
+  {
+   "gender": "Male",
+   "age": 69,
+   "age_range": "61-80",
+   "time_spent_hours": 14.0,
+   "score": 9,
+   "score_pct": 0.45
+  },
+  {
+   "gender": "Female",
+   "age": 24,
+   "age_range": "20-25",
+   "time_spent_hours": 18.0,
+   "score": 9,
+   "score_pct": 0.45
+  },
+  {
+   "gender": "Female",
+   "age": 11,
+   "age_range": "10-15",
+   "time_spent_hours": 1.0,
+   "score": 16,
+   "score_pct": 0.8
+  }
+ ],
+ "coefficients": [
+  {
+   "term": "C(gender)[T.Male]",
+   "coef": 0.0481736346,
+   "se": 0.024133199,
+   "pval": 0.0459169243,
+   "ci_low": 0.0008734337,
+   "ci_high": 0.0954738355
+  },
+  {
+   "term": "time_spent_hours",
+   "coef": -8.24863e-05,
+   "se": 0.0013219267,
+   "pval": 0.9502454799,
+   "ci_low": -0.002673415,
+   "ci_high": 0.0025084425
+  },
+  {
+   "term": "age",
+   "coef": -0.0016562998,
+   "se": 0.0012011119,
+   "pval": 0.1679033781,
+   "ci_low": -0.0040104359,
+   "ci_high": 0.0006978364
+  }
+ ],
+ "group_sizes": [
+  {
+   "age_range": "0-10",
+   "gender": "Female",
+   "n": 2
+  },
+  {
+   "age_range": "10-15",
+   "gender": "Female",
+   "n": 5
+  },
+  {
+   "age_range": "10-15",
+   "gender": "Male",
+   "n": 1
+  },
+  {
+   "age_range": "16-20",
+   "gender": "Female",
+   "n": 16
+  },
+  {
+   "age_range": "16-20",
+   "gender": "Male",
+   "n": 25
+  },
+  {
+   "age_range": "20-25",
+   "gender": "Female",
+   "n": 8
+  },
+  {
+   "age_range": "20-25",
+   "gender": "Male",
+   "n": 24
+  },
+  {
+   "age_range": "26-30",
+   "gender": "Female",
+   "n": 5
+  },
+  {
+   "age_range": "26-30",
+   "gender": "Male",
+   "n": 2
+  },
+  {
+   "age_range": "31-40",
+   "gender": "Female",
+   "n": 3
+  },
+  {
+   "age_range": "31-40",
+   "gender": "Male",
+   "n": 2
+  },
+  {
+   "age_range": "40-50",
+   "gender": "Male",
+   "n": 2
+  },
+  {
+   "age_range": "51-60",
+   "gender": "Female",
+   "n": 2
+  },
+  {
+   "age_range": "51-60",
+   "gender": "Male",
+   "n": 1
+  },
+  {
+   "age_range": "61-80",
+   "gender": "Female",
+   "n": 3
+  },
+  {
+   "age_range": "61-80",
+   "gender": "Male",
+   "n": 1
+  }
+ ],
+ "subgroup_models": [
+  {
+   "n": 25,
+   "pos": 13,
+   "accuracy": 0.48,
+   "precision": 0.5,
+   "recall": 0.5384615385,
+   "f1": 0.5185185185,
+   "roc_auc": 0.5961538462,
+   "age_range": "16-20",
+   "gender": "Male",
+   "pr_auc": 0.6947220385
+  },
+  {
+   "n": 16,
+   "pos": 11,
+   "accuracy": 0.6875,
+   "precision": 0.6875,
+   "recall": 1.0,
+   "f1": 0.8148148148,
+   "roc_auc": 0.2,
+   "age_range": "16-20",
+   "gender": "Female",
+   "pr_auc": 0.5814515661
+  },
+  {
+   "n": 24,
+   "pos": 9,
+   "accuracy": 0.625,
+   "precision": 0.5,
+   "recall": 0.2222222222,
+   "f1": 0.3076923077,
+   "roc_auc": 0.5555555556,
+   "age_range": "20-25",
+   "gender": "Male",
+   "pr_auc": 0.4094880763
+  },
+  {
+   "n": 8,
+   "pos": 5,
+   "accuracy": 0.5,
+   "precision": 0.5714285714,
+   "recall": 0.8,
+   "f1": 0.6666666667,
+   "roc_auc": 0.7333333333,
+   "age_range": "20-25",
+   "gender": "Female",
+   "pr_auc": 0.8746428571
+  }
+ ],
+ "overall_model": {
+  "n": 102,
+  "pos": 60,
+  "accuracy": 0.5784313725,
+  "precision": 0.6164383562,
+  "recall": 0.75,
+  "f1": 0.6766917293,
+  "roc_auc": 0.6259920635
+ }
+}
