@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Image Detection Study</title>
+<meta name="description" content="Does time spent online change how well people tell AI-generated images from human-made ones? Survey results, n = 102.">
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f5f6f8;
+    --text: #16181d;
+    --muted: #5b616e;
+    --border: #e1e4e9;
+    --accent: #2457d6;
+    --female: #d9480f;
+    --male: #2457d6;
+    --warn-bg: #fff4e0;
+    --warn-text: #7a4b00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121417;
+      --surface: #1c1f24;
+      --text: #eceef2;
+      --muted: #a2a8b4;
+      --border: #2e333b;
+      --accent: #7aa2ff;
+      --female: #ff8a50;
+      --male: #7aa2ff;
+      --warn-bg: #3a2c12;
+      --warn-text: #ffd68a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 0 16px 64px; }
+  header { padding: 56px 0 24px; border-bottom: 1px solid var(--border); }
+  .eyebrow { color: var(--muted); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 8px; }
+  h1 { font-size: clamp(28px, 5vw, 42px); line-height: 1.15; margin: 0 0 16px; }
+  h2 { font-size: 24px; margin: 56px 0 8px; }
+  h3 { font-size: 18px; margin: 0 0 4px; }
+  p { margin: 0 0 12px; }
+  .lede { font-size: 20px; color: var(--muted); max-width: 46em; }
+  .answer {
+    margin: 28px 0 0; padding: 20px 24px; border-radius: 10px;
+    background: var(--surface); border-left: 4px solid var(--accent);
+  }
+  .answer strong { font-size: 20px; display: block; margin-bottom: 4px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 32px; }
+  .tile { background: var(--surface); border-radius: 10px; padding: 16px 18px; }
+  .tile .value { font-size: 30px; font-weight: bold; font-variant-numeric: tabular-nums; }
+  .tile .label { color: var(--muted); font-size: 14px; }
+  .chart { width: 100%; height: 420px; margin: 16px 0 4px; }
+  .caption { color: var(--muted); font-size: 15px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } .chart { height: 360px; } }
+  .table-wrap { overflow-x: auto; margin-top: 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+  th, td { text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
+  th { color: var(--muted); font-weight: normal; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+  tr.small td { color: var(--muted); }
+  .badge { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 99px; background: var(--warn-bg); color: var(--warn-text); margin-left: 6px; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  footer { margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+  a { color: var(--accent); }
+  code { font-family: "Courier New", monospace; font-size: .92em; background: var(--surface); padding: 1px 5px; border-radius: 4px; }
+  .error { padding: 16px; background: var(--warn-bg); color: var(--warn-text); border-radius: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">DS Final Project · Survey study</p>
+    <h1>Does time online make people better or worse at spotting AI images?</h1>
+    <p class="lede">Participants judged 20 images as AI-generated or human-made and reported how many hours a week they spend online. We tested whether internet exposure predicts their accuracy.</p>
+    <div class="answer" id="answer"><strong>Loading results…</strong></div>
+    <div class="tiles" id="tiles"></div>
+  </header>
+
+  <section>
+    <h2>Time online vs. accuracy</h2>
+    <p>Each dot is one participant. The dashed line is the overall linear fit. Hover over a dot for details.</p>
+    <div class="chart" id="scatter"></div>
+    <p class="caption" id="scatter-caption"></p>
+  </section>
+
+  <section>
+    <h2>What predicts the score?</h2>
+    <p>Estimates from a linear regression of score on time online, gender and age, with robust (HC3) standard errors. Bars show 95% confidence intervals. An interval crossing zero means no reliable effect.</p>
+    <div class="chart" id="coefs" style="height:300px"></div>
+    <p class="caption">Effects are in percentage points of score: per extra hour online per week, for men compared with women, and per extra year of age.</p>
+  </section>
+
+  <section>
+    <h2>Who took part</h2>
+    <div class="grid2">
+      <div>
+        <h3>Score distribution by gender</h3>
+        <div class="chart" id="scores"></div>
+      </div>
+      <div>
+        <h3>Participants by age group</h3>
+        <div class="chart" id="ages"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Subgroup classifiers</h2>
+    <p>We also trained a small logistic model per age-range × gender group to flag low scorers (score ≤ 60%) from time online and age. Most groups are tiny, so these numbers are exploratory only. An ROC AUC around 0.5 means the model does no better than chance.</p>
+    <div class="table-wrap"><table id="subgroups"></table></div>
+  </section>
+
+  <section>
+    <h2>Method and caveats</h2>
+    <ul>
+      <li><strong>Data:</strong> Google Forms survey export, cleaned and anonymized (names replaced by hashes). One missing hours value was filled with the median.</li>
+      <li><strong>Outcome:</strong> share of the 20 image questions answered correctly.</li>
+      <li><strong>Main test:</strong> ordinary least squares, <code>score ~ hours + gender + age</code>, with robust standard errors, plus Pearson and Spearman correlations.</li>
+      <li><strong>Limits:</strong> self-reported hours, a convenience sample, and an observational design. These results describe associations, not causes. The subgroup analyses run many comparisons on small groups with no correction.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Code, data and notebooks: <a href="https://github.com/DS-2-dev/DS_FinalProject">github.com/DS-2-dev/DS_FinalProject</a>. All figures are regenerated with <code>python src/run_all.py</code>.
+  </footer>
+</main>
+
+<script>
+(async function () {
+  const css = getComputedStyle(document.documentElement);
+  const v = (name) => css.getPropertyValue(name).trim();
+  const color = { Female: v('--female'), Male: v('--male') };
+  const font = { family: 'Arial, Helvetica, sans-serif', size: 14, color: v('--text') };
+  const axis = (extra) => Object.assign({ gridcolor: v('--border'), zerolinecolor: v('--border'), linecolor: v('--border'), automargin: true }, extra);
+  const layout = (extra) => Object.assign({
+    font, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+    margin: { l: 56, r: 16, t: 16, b: 48 }, hoverlabel: { font: { family: font.family } },
+    legend: { orientation: 'h', y: 1.08 },
+  }, extra);
+  const config = { displayModeBar: false, responsive: true };
+  const pct = (x, d = 0) => (x * 100).toFixed(d) + '%';
+  const p = (x) => x < 0.001 ? 'p < 0.001' : 'p = ' + x.toFixed(x < 0.01 ? 3 : 2);
+
+  let data;
+  try {
+    data = await (await fetch('data.json')).json();
+  } catch (e) {
+    document.getElementById('answer').innerHTML = '<div class="error">Could not load data.json. If you opened this file directly, serve the folder instead (for example <code>python -m http.server</code> in <code>docs/</code>).</div>';
+    return;
+  }
+  const s = data.summary, t = s.ols.time_spent_hours;
+
+  document.getElementById('answer').innerHTML =
+    `<strong>No meaningful link.</strong>Across ${s.n} participants, hours spent online had essentially no relationship with accuracy ` +
+    `(r = ${s.pearson.r.toFixed(2)}, ${p(s.pearson.pval)}). Even at the edge of the confidence interval, ` +
+    `10 extra hours a week would move the score by under ${Math.ceil(Math.max(Math.abs(t.ci_low), Math.abs(t.ci_high)) * 1000)} percentage points.`;
+
+  const tiles = [
+    [s.n, 'participants'],
+    [pct(s.score_pct_mean), 'average accuracy (chance = 50%)'],
+    [s.time_hours_median + ' h', 'median hours online per week'],
+    [s.pearson.r.toFixed(2), 'correlation, time vs score'],
+  ];
+  document.getElementById('tiles').innerHTML = tiles.map(([val, lab]) =>
+    `<div class="tile"><div class="value">${val}</div><div class="label">${lab}</div></div>`).join('');
+
+  // Scatter
+  const P = data.participants;
+  const traces = ['Female', 'Male'].map((g) => {
+    const rows = P.filter((r) => r.gender === g);
+    return {
+      type: 'scatter', mode: 'markers', name: g,
+      x: rows.map((r) => r.time_spent_hours), y: rows.map((r) => r.score_pct),
+      customdata: rows.map((r) => [r.age, r.score]),
+      hovertemplate: '%{x:.1f} h/week<br>%{customdata[1]}/20 correct<br>age %{customdata[0]}<extra>' + g + '</extra>',
+      marker: { color: color[g], size: 9, opacity: 0.75, line: { width: 1, color: v('--bg') } },
+    };
+  });
+  const xs = P.map((r) => r.time_spent_hours), ys = P.map((r) => r.score_pct);
+  const mx = xs.reduce((a, b) => a + b) / xs.length, my = ys.reduce((a, b) => a + b) / ys.length;
+  let sxy = 0, sxx = 0;
+  xs.forEach((x, i) => { sxy += (x - mx) * (ys[i] - my); sxx += (x - mx) ** 2; });
+  const slope = sxy / sxx, icpt = my - slope * mx, xmax = Math.max(...xs);
+  traces.push({
+    type: 'scatter', mode: 'lines', name: 'Linear fit', hoverinfo: 'skip',
+    x: [0, xmax], y: [icpt, icpt + slope * xmax], line: { color: v('--muted'), dash: 'dash', width: 2 },
+  });
+  Plotly.newPlot('scatter', traces, layout({
+    xaxis: axis({ title: 'Hours online per week' }),
+    yaxis: axis({ title: 'Score', tickformat: '.0%', range: [0.2, 0.95] }),
+  }), config);
+  document.getElementById('scatter-caption').textContent =
+    `Fitted slope: ${(slope * 1000).toFixed(2)} percentage points per 10 hours. The heaviest user reported ${xmax} hours a week.`;
+
+  // Coefficients
+  const labels = { 'time_spent_hours': 'Hours online (per hour)', 'C(gender)[T.Male]': 'Male vs female', 'age': 'Age (per year)' };
+  const C = data.coefficients.slice().reverse();
+  Plotly.newPlot('coefs', [{
+    type: 'scatter', mode: 'markers',
+    x: C.map((c) => c.coef * 100), y: C.map((c) => labels[c.term] || c.term),
+    error_x: { type: 'data', symmetric: false, array: C.map((c) => (c.ci_high - c.coef) * 100), arrayminus: C.map((c) => (c.coef - c.ci_low) * 100), color: v('--accent'), thickness: 2, width: 6 },
+    marker: { color: v('--accent'), size: 10 },
+    customdata: C.map((c) => p(c.pval)),
+    hovertemplate: '%{x:+.2f} pts (%{customdata})<extra></extra>',
+  }], layout({
+    margin: { l: 8, r: 16, t: 8, b: 48 }, showlegend: false,
+    xaxis: axis({ title: 'Effect (percentage points)', zeroline: true, zerolinewidth: 2 }),
+    yaxis: axis(),
+  }), config);
+
+  // Score by gender
+  Plotly.newPlot('scores', ['Female', 'Male'].map((g) => ({
+    type: 'box', name: g, y: P.filter((r) => r.gender === g).map((r) => r.score_pct),
+    boxpoints: 'all', jitter: 0.4, pointpos: 0, marker: { color: color[g], size: 6, opacity: 0.6 },
+    line: { color: color[g] }, fillcolor: 'rgba(0,0,0,0)', hovertemplate: '%{y:.0%}<extra>' + g + '</extra>',
+  })), layout({ showlegend: false, yaxis: axis({ tickformat: '.0%' }), xaxis: axis() }), config);
+
+  // Age groups
+  const order = ['0-10', '10-15', '16-20', '20-25', '26-30', '31-40', '40-50', '51-60', '61-80'];
+  Plotly.newPlot('ages', ['Female', 'Male'].map((g) => ({
+    type: 'bar', name: g, x: order,
+    y: order.map((a) => (data.group_sizes.find((r) => r.age_range === a && r.gender === g) || { n: 0 }).n),
+    marker: { color: color[g] }, hovertemplate: '%{x}: %{y}<extra>' + g + '</extra>',
+  })), layout({ barmode: 'stack', xaxis: axis({ title: 'Age range' }), yaxis: axis({ title: 'Participants' }) }), config);
+
+  // Subgroup table
+  const f3 = (x) => x == null ? '—' : x.toFixed(2);
+  const rows = data.subgroup_models.slice().sort((a, b) => order.indexOf(a.age_range) - order.indexOf(b.age_range) || a.gender.localeCompare(b.gender));
+  document.getElementById('subgroups').innerHTML =
+    '<thead><tr><th>Age</th><th>Gender</th><th>n</th><th>Low scorers</th><th>Accuracy</th><th>F1</th><th>ROC AUC</th></tr></thead><tbody>' +
+    rows.map((r) => {
+      const small = r.n < 10;
+      const flag = r.cv_fallback ? '<span class="badge">in-sample</span>' : (small ? '<span class="badge">n &lt; 10</span>' : '');
+      return `<tr class="${small ? 'small' : ''}"><td>${r.age_range}</td><td>${r.gender}${flag}</td><td>${r.n}</td><td>${r.pos}</td><td>${f3(r.accuracy)}</td><td>${f3(r.f1)}</td><td>${f3(r.roc_auc)}</td></tr>`;
+    }).join('') + '</tbody>';
+})();
+</script>
+</body>
+</html>

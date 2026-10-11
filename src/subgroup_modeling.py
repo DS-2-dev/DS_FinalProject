@@ -2,20 +2,18 @@
 """Train models per age-range × gender subgroup.
 
 Behavior:
-- Runs the cleaning script to ensure `data/cleaned_dataset.csv` is up to date.
+- Reads `data/cleaned_dataset.csv` (run `src/cleaning.py` first).
 - Builds label `low_performance` where `score_pct <= 0.6` (consistent with earlier work).
 - For each subgroup (age_range × gender) with at least `MIN_N` rows, trains a logistic
   regression using `time_spent_hours` and `age` as predictors.
 - Evaluates with stratified 5-fold CV and saves metrics and trained model.
 
 Outputs:
-- `models/subgroup_{age}_{gender}_logistic.joblib`
+- `models/subgroups/subgroup_{age}_{gender}_logistic.joblib`
 - `outputs/models/subgroup_model_metrics.csv`
 
 Run: python src/subgroup_modeling.py
 """
-import os
-import runpy
 import joblib
 import pandas as pd
 import numpy as np
@@ -26,20 +24,14 @@ from sklearn.metrics import (accuracy_score, precision_score, recall_score,
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
+from common import CLEANED_CSV, GENDERS, LABEL_THRESH, MODELS, OUTPUTS, age_to_range, prepare_X
+
 
 MIN_N = 20  # minimum subgroup size to train on (tunable)
-LABEL_THRESH = 0.6  # score_pct <= this -> low_performance
 
 
 def make_label(df):
     return (df['score_pct'] <= LABEL_THRESH).astype(int)
-
-
-def prepare_X(df):
-    X = df[['time_spent_hours', 'age']].copy()
-    X['time_spent_hours'] = X['time_spent_hours'].fillna(X['time_spent_hours'].median())
-    X['age'] = X['age'].fillna(X['age'].median())
-    return X
 
 
 def eval_model(estimator, X, y, cv=5):
@@ -109,49 +101,18 @@ def main():
     parser.add_argument('--min-n', type=int, default=MIN_N, help='Minimum subgroup size to train')
     args = parser.parse_args()
     min_n = int(args.min_n)
-    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # Ensure cleaned dataset is current
-    runpy.run_path(os.path.join(root, 'src', 'cleaning.py'))
-
-    df = pd.read_csv(os.path.join(root, 'data', 'cleaned_dataset.csv'))
-    # recreate age_range mapping used earlier
-    def age_to_range(a):
-        try:
-            a = float(a)
-        except Exception:
-            return None
-        if a <= 10:
-            return '0-10'
-        if 10 < a <= 15:
-            return '10-15'
-        if 15 < a <= 20:
-            return '16-20'
-        if 20 < a <= 25:
-            return '20-25'
-        if 25 < a <= 30:
-            return '26-30'
-        if 30 < a <= 40:
-            return '31-40'
-        if 40 < a <= 50:
-            return '40-50'
-        if 50 < a <= 60:
-            return '51-60'
-        if 60 < a <= 80:
-            return '61-80'
-        return None
-
+    df = pd.read_csv(CLEANED_CSV)
     df['age_range'] = df['age'].apply(age_to_range)
     df['low_performance'] = make_label(df)
 
-    models_dir = os.path.join(root, 'models', 'subgroups')
-    os.makedirs(models_dir, exist_ok=True)
+    models_dir = MODELS / 'subgroups'
+    models_dir.mkdir(parents=True, exist_ok=True)
 
     metrics = []
 
-    genders = ['Male', 'Female']
     age_labels = sorted(df['age_range'].dropna().unique())
     for age_label in age_labels:
-        for gender in genders:
+        for gender in GENDERS:
             sub = df[(df['age_range'] == age_label) & (df['gender'].str.lower() == gender.lower())]
             if len(sub) < min_n:
                 print(f"Skipping {age_label} {gender}: n={len(sub)} < min_n={min_n}")
@@ -172,15 +133,15 @@ def main():
 
             # retrain on full subgroup and save model
             pipe.fit(X, y)
-            model_path = os.path.join(models_dir, f'subgroup_{age_label}_{gender}_logistic.joblib')
+            model_path = models_dir / f'subgroup_{age_label}_{gender}_logistic.joblib'
             joblib.dump({'pipeline': pipe, 'age_range': age_label, 'gender': gender, 'label': 'low_performance'}, model_path)
             print(f"Trained and saved model for {age_label} {gender} -> {model_path}")
 
     # Save metrics
     if metrics:
         metrics_df = pd.DataFrame(metrics)
-        out_metrics = os.path.join(root, 'outputs', 'models', 'subgroup_model_metrics.csv')
-        os.makedirs(os.path.dirname(out_metrics), exist_ok=True)
+        out_metrics = OUTPUTS / 'models' / 'subgroup_model_metrics.csv'
+        out_metrics.parent.mkdir(parents=True, exist_ok=True)
         metrics_df.to_csv(out_metrics, index=False)
         print('Wrote metrics to', out_metrics)
     else:

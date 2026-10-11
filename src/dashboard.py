@@ -11,7 +11,8 @@ import os
 import pandas as pd
 import plotly.express as px
 import plotly.io as pio
-import numpy as np
+
+from common import CLEANED_CSV, OUTPUTS
 
 
 def make_figures(df):
@@ -49,9 +50,6 @@ def make_figures(df):
     if len(numeric_cols) >= 2:
         # drop rows with NaN in these cols
         pc_df = df[numeric_cols].dropna()
-        # normalize numeric columns for better visualization
-        norm = (pc_df - pc_df.min()) / (pc_df.max() - pc_df.min())
-        norm.columns = pc_df.columns
         figs['parallel'] = px.parallel_coordinates(pc_df, color=numeric_cols[0], labels={c: c for c in pc_df.columns},
                                                   title='Parallel coordinates (numeric)')
 
@@ -69,7 +67,7 @@ def assemble_html(figs, outpath):
 <html>
 <head>
   <meta charset="utf-8" />
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-3.1.0.min.js"></script>
   <title>EDA Dashboard</title>
 </head>
 <body>
@@ -86,12 +84,10 @@ def assemble_html(figs, outpath):
 
 
 def main():
-    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = os.path.join(root, 'data', 'cleaned_dataset.csv')
-    df = pd.read_csv(path)
+    df = pd.read_csv(CLEANED_CSV)
 
     figs = make_figures(df)
-    outdir = os.path.join(root, 'outputs', 'plots')
+    outdir = os.path.join(OUTPUTS, 'plots')
     os.makedirs(outdir, exist_ok=True)
     outpath = os.path.join(outdir, 'dashboard.html')
     assemble_html(figs, outpath)

@@ -3,17 +3,18 @@
 
 Reads the Google Forms export CSV, normalizes columns, parses the score and
 time-spent fields, anonymizes names into `participant_id`, and writes a
-cleaned CSV to `data/cleaned_dataset.csv`.
+cleaned CSV to `data/cleaned_dataset.csv`. Missing `time_spent_hours` values
+are imputed with the sample median.
 
 Run: python src/cleaning.py
 """
-import csv
 import hashlib
-import os
 import re
 from statistics import mean
 
 import pandas as pd
+
+from common import CLEANED_CSV, RAW_CSV
 
 
 def parse_score(score_raw):
@@ -133,26 +134,21 @@ def clean_dataframe(df):
 
 
 def main():
-    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    src_csv = os.path.join(root, 'AI Image Effect Analysis (Responses) - Form Responses 1.csv')
-    if not os.path.exists(src_csv):
-        # also try data/
-        alt = os.path.join(root, 'data', 'AI Image Effect Analysis (Responses) - Form Responses 1.csv')
-        if os.path.exists(alt):
-            src_csv = alt
-        else:
-            print('Could not find the survey CSV at expected locations.')
-            print('Please place the Forms CSV at the repository root or in data/ and try again.')
-            return
+    if not RAW_CSV.exists():
+        raise SystemExit(f'Survey CSV not found at {RAW_CSV}')
 
-    df = pd.read_csv(src_csv)
+    df = pd.read_csv(RAW_CSV)
     cleaned = clean_dataframe(df)
 
-    out_dir = os.path.join(root, 'data')
-    os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, 'cleaned_dataset.csv')
-    cleaned.to_csv(out_path, index=False)
-    print(f'Wrote cleaned dataset to: {out_path}')
+    n_missing = int(cleaned['time_spent_hours'].isna().sum())
+    if n_missing:
+        median = cleaned['time_spent_hours'].median()
+        cleaned['time_spent_hours'] = cleaned['time_spent_hours'].fillna(median)
+        print(f'Imputed {n_missing} missing time_spent_hours with median={median}')
+
+    CLEANED_CSV.parent.mkdir(parents=True, exist_ok=True)
+    cleaned.to_csv(CLEANED_CSV, index=False)
+    print(f'Wrote cleaned dataset to: {CLEANED_CSV} (n={len(cleaned)})')
 
 
 if __name__ == '__main__':

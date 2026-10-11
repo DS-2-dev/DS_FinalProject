@@ -7,3 +7,11 @@ participant_id,gender,age,time_spent_hours,score,score_pct,age_range
 c4528bf2fbb3,Female,19,30.0,10,0.5,16-20
 d4dc670acbf9,Female,18,5.0,11,0.55,16-20
 5b7eb05e7984,Female,20,35.0,13,0.65,16-20
+e705ffe85dde,Female,16,4.0,8,0.4,16-20
+e705ffe85dde,Female,16,4.0,15,0.75,16-20
+7f7c44c218bd,Female,17,10.0,10,0.5,16-20
+e77bfb8fc006,Female,17,14.0,14,0.7,16-20
+84290676e245,Female,17,20.0,8,0.4,16-20
+6488438ef09d,Female,17,21.0,9,0.45,16-20
+baf4b32ae34b,Female,16,21.0,13,0.65,16-20
+21db01c3458c,Female,17,36.0,12,0.6,16-20

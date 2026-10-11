@@ -1,12 +1,27 @@
-This pooled OLS summary file is superseded by the full-sample results in
-`pooled_ols_allresponses_summary.txt` and `pooled_ols_allresponses_coefficients.csv`.
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:              score_pct   R-squared:                       0.064
+Model:                            OLS   Adj. R-squared:                  0.036
+Method:                 Least Squares   F-statistic:                     2.057
+Date:                Sat, 10 Oct 2026   Prob (F-statistic):              0.111
+Time:                        19:26:16   Log-Likelihood:                 68.509
+No. Observations:                 102   AIC:                            -129.0
+Df Residuals:                      98   BIC:                            -118.5
+Df Model:                           3                                         
+Covariance Type:                  HC3                                         
+=====================================================================================
+                        coef    std err          z      P>|z|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+Intercept             0.5981      0.046     13.015      0.000       0.508       0.688
+C(gender)[T.Male]     0.0482      0.024      1.996      0.046       0.001       0.095
+time_spent_hours  -8.249e-05      0.001     -0.062      0.950      -0.003       0.003
+age                  -0.0017      0.001     -1.379      0.168      -0.004       0.001
+==============================================================================
+Omnibus:                        1.748   Durbin-Watson:                   1.949
+Prob(Omnibus):                  0.417   Jarque-Bera (JB):                1.421
+Skew:                          -0.109   Prob(JB):                        0.491
+Kurtosis:                       2.464   Cond. No.                         116.
+==============================================================================
 
-Reason: earlier analyses used a smaller complete-case sample; the repository
-now uses the full cleaned dataset (`data/cleaned_dataset.csv`, n = 102).
-
-Please refer to the full-sample artifacts under `outputs/analysis/`:
-- `pooled_ols_allresponses_summary.txt`  (complete textual summary for n=102)
-- `pooled_ols_allresponses_coefficients.csv`  (coefficients and SEs)
-
-If you need the old small-sample summary preserved, see the Git history for
-previous commits.
+Notes:
+[1] Standard Errors are heteroscedasticity robust (HC3)

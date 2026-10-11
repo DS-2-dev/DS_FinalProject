@@ -8,7 +8,6 @@ subgroup. Outputs are saved to `outputs/models/plots/{age}_{gender}/`.
 
 Run: python src/plot_models.py
 """
-import os
 import re
 import joblib
 import numpy as np
@@ -23,13 +22,10 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.metrics import (roc_curve, auc, precision_recall_curve,
                              confusion_matrix, ConfusionMatrixDisplay)
 
+from common import CLEANED_CSV, LABEL_THRESH, MODELS, OUTPUTS, age_to_range, prepare_X
 
-MODEL_DIR = os.path.join('models', 'subgroups')
 
-
-def ensure(path):
-    os.makedirs(path, exist_ok=True)
-    return path
+MODEL_DIR = MODELS / 'subgroups'
 
 
 def parse_model_filename(fname):
@@ -38,13 +34,6 @@ def parse_model_filename(fname):
     if not m:
         return None
     return m.group(1), m.group(2)
-
-
-def prepare_X(sub):
-    X = sub[['time_spent_hours', 'age']].copy()
-    X['time_spent_hours'] = X['time_spent_hours'].fillna(X['time_spent_hours'].median())
-    X['age'] = X['age'].fillna(X['age'].median())
-    return X
 
 
 def plot_roc_pr_confusion(age_label, gender, X, y, save_dir):
@@ -83,7 +72,7 @@ def plot_roc_pr_confusion(age_label, gender, X, y, save_dir):
     ax.set_ylabel('True Positive Rate')
     ax.set_title(f'ROC: {age_label} {gender}')
     ax.legend()
-    fig.savefig(os.path.join(save_dir, 'roc.png'), dpi=150)
+    fig.savefig(save_dir / 'roc.png', dpi=150)
     plt.close(fig)
 
     # Precision-Recall
@@ -98,7 +87,7 @@ def plot_roc_pr_confusion(age_label, gender, X, y, save_dir):
     ax.set_ylabel('Precision')
     ax.set_title(f'Precision-Recall: {age_label} {gender}')
     ax.legend()
-    fig.savefig(os.path.join(save_dir, 'pr.png'), dpi=150)
+    fig.savefig(save_dir / 'pr.png', dpi=150)
     plt.close(fig)
 
     # Confusion matrix
@@ -107,7 +96,7 @@ def plot_roc_pr_confusion(age_label, gender, X, y, save_dir):
     disp = ConfusionMatrixDisplay(confusion_matrix=cm)
     disp.plot(ax=ax)
     ax.set_title(f'Confusion Matrix: {age_label} {gender}')
-    fig.savefig(os.path.join(save_dir, 'confusion_matrix.png'), dpi=150)
+    fig.savefig(save_dir / 'confusion_matrix.png', dpi=150)
     plt.close(fig)
 
     return {'roc_auc': float(roc_auc), 'pr_auc': float(pr_auc), 'cv_used': bool(cv_used)}
@@ -122,48 +111,21 @@ def coef_plot(age_label, gender, X, y, save_dir):
     fig, ax = plt.subplots()
     sns.barplot(x=coef, y=features, orient='h', ax=ax)
     ax.set_title(f'Logistic coefficients (trained on full subgroup): {age_label} {gender}')
-    fig.savefig(os.path.join(save_dir, 'coefficients.png'), dpi=150)
+    fig.savefig(save_dir / 'coefficients.png', dpi=150)
     plt.close(fig)
 
 
 def main():
-    root = os.path.abspath('.')
-    cleaned = pd.read_csv(os.path.join(root, 'data', 'cleaned_dataset.csv'))
-
-    # Recompute age_range mapping consistent with earlier scripts
-    def age_to_range(a):
-        try:
-            a = float(a)
-        except Exception:
-            return None
-        if a <= 10:
-            return '0-10'
-        if 10 < a <= 15:
-            return '10-15'
-        if 15 < a <= 20:
-            return '16-20'
-        if 20 < a <= 25:
-            return '20-25'
-        if 25 < a <= 30:
-            return '26-30'
-        if 30 < a <= 40:
-            return '31-40'
-        if 40 < a <= 50:
-            return '40-50'
-        if 50 < a <= 60:
-            return '51-60'
-        if 60 < a <= 80:
-            return '61-80'
-        return None
+    cleaned = pd.read_csv(CLEANED_CSV)
 
     cleaned['age_range'] = cleaned['age'].apply(age_to_range)
 
     results = []
-    if not os.path.exists(MODEL_DIR):
+    if not MODEL_DIR.exists():
         print('No subgroup models directory found at', MODEL_DIR)
         return
 
-    for fname in os.listdir(MODEL_DIR):
+    for fname in sorted(p.name for p in MODEL_DIR.iterdir()):
         parsed = parse_model_filename(fname)
         if parsed is None:
             continue
@@ -174,10 +136,10 @@ def main():
             continue
 
         X = prepare_X(sub)
-        y = (sub['score_pct'] <= 0.6).astype(int)
+        y = (sub['score_pct'] <= LABEL_THRESH).astype(int)
 
-        save_dir = os.path.join(root, 'outputs', 'models', 'plots', f'{age_label}_{gender}')
-        ensure(save_dir)
+        save_dir = OUTPUTS / 'models' / 'plots' / f'{age_label}_{gender}'
+        save_dir.mkdir(parents=True, exist_ok=True)
 
         print('Plotting for', age_label, gender, 'n=', len(sub))
         metrics = plot_roc_pr_confusion(age_label, gender, X, y, save_dir)
@@ -188,7 +150,7 @@ def main():
 
     if results:
         dfm = pd.DataFrame(results)
-        outpath = os.path.join(root, 'outputs', 'models', 'plots', 'subgroup_model_summary.csv')
+        outpath = OUTPUTS / 'models' / 'plots' / 'subgroup_model_summary.csv'
         dfm.to_csv(outpath, index=False)
         print('Wrote subgroup model summary to', outpath)
 

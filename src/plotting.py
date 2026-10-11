@@ -16,7 +16,8 @@ import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
+
+from common import CLEANED_CSV, OUTPUTS
 
 try:
     import plotly.express as px
@@ -25,7 +26,7 @@ except Exception:
 
 
 def ensure_outdir():
-    outdir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'outputs', 'plots')
+    outdir = os.path.join(OUTPUTS, 'plots')
     os.makedirs(outdir, exist_ok=True)
     return outdir
 
@@ -37,9 +38,7 @@ def savefig(fig, path):
 
 
 def main():
-    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = os.path.join(root, 'data', 'cleaned_dataset.csv')
-    df = pd.read_csv(path)
+    df = pd.read_csv(CLEANED_CSV)
 
     outdir = ensure_outdir()
 
@@ -97,7 +96,7 @@ def main():
                          hover_data=['age','participant_id'] if 'participant_id' in df.columns else None,
                          title='Interactive: Time spent vs score')
         html_path = os.path.join(outdir, 'interactive_time_vs_score.html')
-        fig.write_html(html_path)
+        fig.write_html(html_path, include_plotlyjs='cdn')
 
     print('Saved plots to', outdir)
 

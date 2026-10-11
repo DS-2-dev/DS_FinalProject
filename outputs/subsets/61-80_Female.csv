@@ -1,0 +1,4 @@
+participant_id,gender,age,time_spent_hours,score,score_pct,age_range
+d84724d0a042,Female,62,21.0,9,0.45,61-80
+b2e5ea54910a,Female,67,10.0,15,0.75,61-80
+e2fb231f9f8c,Female,74,10.0,10,0.5,61-80

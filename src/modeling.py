@@ -9,21 +9,19 @@ This script:
 
 Run: python src/modeling.py
 """
-import os
-from pprint import pprint
-
 import joblib
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (accuracy_score, auc, f1_score, precision_score,
-                             recall_score, roc_auc_score, roc_curve)
-from sklearn.model_selection import (StratifiedKFold, cross_val_predict,
-                                     cross_val_score, train_test_split)
+from sklearn.metrics import (accuracy_score, f1_score, precision_score,
+                             recall_score, roc_auc_score)
+from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+from common import CLEANED_CSV, MODELS
 
 
 def make_label(df, method='threshold', threshold=0.5):
@@ -94,9 +92,7 @@ def build_pipelines():
 
 
 def main():
-    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = os.path.join(root, 'data', 'cleaned_dataset.csv')
-    df = pd.read_csv(path)
+    df = pd.read_csv(CLEANED_CSV)
 
     # Candidate label definitions to try
     label_defs = [
@@ -157,9 +153,8 @@ def main():
         best_pipe = pipelines[model_name]
         best_pipe.fit(X_full, y_full)
 
-        model_dir = os.path.join(root, 'models')
-        os.makedirs(model_dir, exist_ok=True)
-        save_path = os.path.join(model_dir, f'best_model_{label_name}_{model_name}.joblib')
+        MODELS.mkdir(parents=True, exist_ok=True)
+        save_path = MODELS / f'best_model_{label_name}_{model_name}.joblib'
         joblib.dump({'pipeline': best_pipe, 'label_name': label_name, 'model_name': model_name}, save_path)
         print('Saved best model to', save_path)
     else:

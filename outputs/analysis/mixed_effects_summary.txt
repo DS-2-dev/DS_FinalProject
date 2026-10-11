@@ -1,0 +1,23 @@
+           Mixed Linear Model Regression Results
+===========================================================
+Model:              MixedLM  Dependent Variable:  score_pct
+No. Observations:   102      Method:              ML       
+No. Groups:         2        Scale:               0.0156   
+Min. group size:    44       Log-Likelihood:      66.8950  
+Max. group size:    58       Converged:           Yes      
+Mean group size:    51.0                                   
+-----------------------------------------------------------
+                 Coef.  Std.Err.   z    P>|z| [0.025 0.975]
+-----------------------------------------------------------
+Intercept         0.623    0.035 17.999 0.000  0.555  0.691
+time_spent_hours  0.000    0.001  0.082 0.935 -0.001  0.001
+age              -0.002    0.001 -1.710 0.087 -0.004  0.000
+Group Var         0.000    0.005                           
+===========================================================
+
+
+Warnings:
+Maximum Likelihood optimization failed to converge. Check mle_retvals
+Random effects covariance is singular
+Retrying MixedLM optimization with lbfgs
+The MLE may be on the boundary of the parameter space.

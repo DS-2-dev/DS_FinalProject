@@ -1,2 +1,0 @@
-Pooled OLS was fit to complete cases. See pooled_ols_summary.txt and pooled_ols_coefficients.csv.
-Cross-validated RMSE ~ 0.138
