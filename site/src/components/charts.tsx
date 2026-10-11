@@ -73,7 +73,7 @@ export function ScoreDots({ gender, participants, stats }: { gender: Gender; par
         <ReferenceLine segment={[{ x: stats.score_mean, y: 0.4 }, { x: stats.score_mean, y: 12 }]} stroke="var(--foreground)" strokeWidth={1.5} />
         <ReferenceLine segment={[{ x: stats.score_mean - half, y: -0.3 }, { x: stats.score_mean + half, y: -0.3 }]}
           stroke="var(--foreground)" strokeWidth={4} strokeLinecap="round" />
-        <ChartTooltip cursor={false} content={<PointTooltip />} />
+        <ChartTooltip cursor={false} isAnimationActive={false} content={<PointTooltip />} />
         <Scatter data={points} fill={COLOR[gender]} stroke="var(--background)" strokeWidth={2} shape="circle" isAnimationActive={false} />
         <ZAxis range={[64, 64]} />
       </ScatterChart>
@@ -133,7 +133,7 @@ export function TimeScatter({ gender, participants }: { gender: Gender; particip
               style={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
           </Scatter>
         )}
-        <ChartTooltip cursor={false} shared={false} content={<PointTooltip />} />
+        <ChartTooltip cursor={false} isAnimationActive={false} shared={false} content={<PointTooltip />} />
       </ComposedChart>
     </ChartContainer>
   )
