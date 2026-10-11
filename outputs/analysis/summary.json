@@ -48,5 +48,113 @@
       "ci_low": 0.508006412742139,
       "ci_high": 0.6881448916259033
     }
-  }
+  },
+  "gender_gap": {
+    "male_minus_female_pts": 5.148902821316625,
+    "welch_t": 2.08632221175042,
+    "welch_p": 0.03952087499376434,
+    "mannwhitney_p": 0.04422933269298333,
+    "cohens_d": 0.4120706611621361
+  },
+  "by_gender": [
+    {
+      "gender": "Male",
+      "n": 58,
+      "score_mean": 0.6060344828,
+      "score_sd": 0.1354257699,
+      "score_median": 0.625,
+      "pct_above_chance": 0.6896551724,
+      "hours_median": 23.5,
+      "age_median": 21.0,
+      "pearson_r": -0.0048367969,
+      "pearson_p": 0.9712550351,
+      "spearman_rho": 0.1522120604,
+      "spearman_p": 0.2540200863,
+      "effect_per_10h_pts": -0.3095374876,
+      "ci_low_pts": -3.909456028,
+      "ci_high_pts": 3.2903810528,
+      "time_pval": 0.8661689545,
+      "age_coef_pts_per_year": -0.3923646792,
+      "age_pval": 0.0009258569,
+      "age_spearman_rho": -0.1276847075,
+      "age_spearman_p": 0.3394934533,
+      "n_over_40": 4,
+      "age_coef_under40_pts": -0.4589382555,
+      "age_pval_under40": 0.470724285,
+      "r2": 0.0717617561
+    },
+    {
+      "gender": "Female",
+      "n": 44,
+      "score_mean": 0.5545454545,
+      "score_sd": 0.1135157923,
+      "score_median": 0.55,
+      "pct_above_chance": 0.5454545455,
+      "hours_median": 20.0,
+      "age_median": 20.0,
+      "pearson_r": -0.0113415009,
+      "pearson_p": 0.9417523931,
+      "spearman_rho": 0.0285934715,
+      "spearman_p": 0.8538212736,
+      "effect_per_10h_pts": -0.0177828872,
+      "ci_low_pts": -2.6811409973,
+      "ci_high_pts": 2.645575223,
+      "time_pval": 0.9895588469,
+      "age_coef_pts_per_year": -0.055868587,
+      "age_pval": 0.735115839,
+      "age_spearman_rho": -0.0387976701,
+      "age_spearman_p": 0.8025564948,
+      "n_over_40": 5,
+      "age_coef_under40_pts": 0.0789652285,
+      "age_pval_under40": 0.8014050421,
+      "r2": 0.0056150016
+    }
+  ],
+  "robustness": [
+    {
+      "spec": "Main model",
+      "n": 102,
+      "r2": 0.0643564707,
+      "effect_per_10h_pts": -0.0824862599,
+      "ci_low_pts": -2.6734150077,
+      "ci_high_pts": 2.5084424879,
+      "pval": 0.9502454799
+    },
+    {
+      "spec": "Without answers over 100 h",
+      "n": 101,
+      "r2": 0.0916853966,
+      "effect_per_10h_pts": 1.0962487043,
+      "ci_low_pts": -0.5837802515,
+      "ci_high_pts": 2.7762776601,
+      "pval": 0.2009283008
+    },
+    {
+      "spec": "Log of hours",
+      "n": 102,
+      "r2": 0.0642267947,
+      "effect_per_10h_pts": -0.0117855716,
+      "ci_low_pts": -1.3896801673,
+      "ci_high_pts": 1.366109024,
+      "pval": 0.9866247328
+    },
+    {
+      "spec": "Without the imputed row",
+      "n": 101,
+      "r2": 0.0690862498,
+      "effect_per_10h_pts": -0.0812566788,
+      "ci_low_pts": -2.6735923506,
+      "ci_high_pts": 2.5110789931,
+      "pval": 0.9510127723
+    },
+    {
+      "spec": "Time only (no controls)",
+      "n": 102,
+      "r2": 0.0009779644,
+      "effect_per_10h_pts": 0.2190172383,
+      "ci_low_pts": -2.422140369,
+      "ci_high_pts": 2.8601748456,
+      "pval": 0.8708889371
+    }
+  ]
 }

@@ -4,7 +4,7 @@ Dep. Variable:              score_pct   R-squared:                       0.064
 Model:                            OLS   Adj. R-squared:                  0.036
 Method:                 Least Squares   F-statistic:                     2.057
 Date:                Sat, 10 Oct 2026   Prob (F-statistic):              0.111
-Time:                        19:26:16   Log-Likelihood:                 68.509
+Time:                        19:46:01   Log-Likelihood:                 68.509
 No. Observations:                 102   AIC:                            -129.0
 Df Residuals:                      98   BIC:                            -118.5
 Df Model:                           3                                         

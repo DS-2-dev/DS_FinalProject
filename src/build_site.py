@@ -36,7 +36,7 @@ def main():
         'coefficients': records(coefs),
         'group_sizes': records(group_sizes),
         'subgroup_models': records(metrics),
-        'gender_models': records(pd.read_csv(OUTPUTS / 'models' / 'gender_summary_metrics.csv').drop(columns='note')),
+        'overall_model': records(pd.read_csv(OUTPUTS / 'models' / 'overall_model_metrics.csv'))[0],
     }
     out = ROOT / 'docs' / 'data.json'
     out.parent.mkdir(exist_ok=True)

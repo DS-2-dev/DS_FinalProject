@@ -10,6 +10,8 @@ MODELS = ROOT / 'models'
 
 LABEL_THRESH = 0.6  # score_pct <= this -> low_performance
 GENDERS = ['Male', 'Female']
+MIN_GROUP_N = 6  # smallest age × gender subgroup worth plotting or modeling
+AGE_ORDER = ['0-10', '10-15', '16-20', '20-25', '26-30', '31-40', '40-50', '51-60', '61-80']
 
 
 def age_to_range(age):

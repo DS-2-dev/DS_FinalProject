@@ -8,7 +8,6 @@ Produces:
 - scatter `time_spent_hours` vs `score_pct` with regression line
 - correlation heatmap for numeric features
 - pairwise scatter matrix for numeric features (saved as PNG)
-- interactive Plotly scatter HTML for exploration
 
 Run: python src/plotting.py
 """
@@ -18,11 +17,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from common import CLEANED_CSV, OUTPUTS
-
-try:
-    import plotly.express as px
-except Exception:
-    px = None
 
 
 def ensure_outdir():
@@ -89,14 +83,6 @@ def main():
         pairpath = os.path.join(outdir, 'pairplot_numeric.png')
         pp.savefig(pairpath, dpi=200)
         plt.close('all')
-
-    # 7) Interactive plotly scatter (.html)
-    if px is not None and 'time_spent_hours' in df.columns:
-        fig = px.scatter(df, x='time_spent_hours', y='score_pct', color='gender' if 'gender' in df.columns else None,
-                         hover_data=['age','participant_id'] if 'participant_id' in df.columns else None,
-                         title='Interactive: Time spent vs score')
-        html_path = os.path.join(outdir, 'interactive_time_vs_score.html')
-        fig.write_html(html_path, include_plotlyjs='cdn')
 
     print('Saved plots to', outdir)
 

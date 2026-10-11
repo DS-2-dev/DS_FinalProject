@@ -2,7 +2,7 @@
 """Plot evaluation results for subgroup models.
 
 Loads models from `models/subgroups/` and the cleaned dataset, runs stratified
-CV predictions (using a fresh pipeline) to compute ROC and PR curves, confusion
+CV predictions (same folds as `subgroup_modeling.py`) to compute ROC and PR curves, confusion
 matrices, and saves coefficient plots for logistic models retrained on full
 subgroup. Outputs are saved to `outputs/models/plots/{age}_{gender}/`.
 
@@ -10,19 +10,16 @@ Run: python src/plot_models.py
 """
 import re
 import joblib
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import (roc_curve, auc, precision_recall_curve,
                              confusion_matrix, ConfusionMatrixDisplay)
 
 from common import CLEANED_CSV, LABEL_THRESH, MODELS, OUTPUTS, age_to_range, prepare_X
+from subgroup_modeling import cv_splitter, make_pipeline
 
 
 MODEL_DIR = MODELS / 'subgroups'
@@ -37,27 +34,9 @@ def parse_model_filename(fname):
 
 
 def plot_roc_pr_confusion(age_label, gender, X, y, save_dir):
-    pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression(max_iter=500))])
-
-    # Determine the minimum class count to set n_splits for StratifiedKFold
-    class_counts = pd.Series(y).value_counts()
-    min_class_count = int(class_counts.min()) if len(class_counts) > 0 else 0
-
-    if min_class_count < 2:
-        # Not enough samples in one class for CV; fit on full data and compute in-sample metrics (optimistic)
-        pipe.fit(X, y)
-        try:
-            y_proba = pipe.predict_proba(X)[:, 1]
-        except Exception:
-            y_proba = np.zeros(len(y))
-        y_pred = pipe.predict(X)
-        cv_used = False
-    else:
-        n_splits = min(5, min_class_count)
-        skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
-        y_proba = cross_val_predict(pipe, X, y, cv=skf, method='predict_proba')[:, 1]
-        y_pred = cross_val_predict(pipe, X, y, cv=skf, method='predict')
-        cv_used = True
+    skf = cv_splitter(y)
+    y_proba = cross_val_predict(make_pipeline(), X, y, cv=skf, method='predict_proba')[:, 1]
+    y_pred = cross_val_predict(make_pipeline(), X, y, cv=skf, method='predict')
 
     # ROC
     try:
@@ -99,13 +78,12 @@ def plot_roc_pr_confusion(age_label, gender, X, y, save_dir):
     fig.savefig(save_dir / 'confusion_matrix.png', dpi=150)
     plt.close(fig)
 
-    return {'roc_auc': float(roc_auc), 'pr_auc': float(pr_auc), 'cv_used': bool(cv_used)}
+    return {'roc_auc': float(roc_auc), 'pr_auc': float(pr_auc)}
 
 
 def coef_plot(age_label, gender, X, y, save_dir):
     # Fit on full subgroup to get coefficients
-    pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression(max_iter=500))])
-    pipe.fit(X, y)
+    pipe = make_pipeline().fit(X, y)
     coef = pipe.named_steps['clf'].coef_.ravel()
     features = X.columns.tolist()
     fig, ax = plt.subplots()

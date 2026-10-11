@@ -1,3 +1,0 @@
-gender,n,pos,accuracy,precision,recall,f1,roc_auc,pr_auc,note
-Female,44,22,0.571,0.588,0.811,0.679,0.43,0.669,n=44; ROC=0.430; PR=0.669
-Male,58,23,0.569,0.52,0.408,0.438,0.593,0.572,n=58; ROC=0.593; PR=0.572

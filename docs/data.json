@@ -49,7 +49,115 @@
     "ci_low": 0.508006412742139,
     "ci_high": 0.6881448916259033
    }
-  }
+  },
+  "gender_gap": {
+   "male_minus_female_pts": 5.148902821316625,
+   "welch_t": 2.08632221175042,
+   "welch_p": 0.03952087499376434,
+   "mannwhitney_p": 0.04422933269298333,
+   "cohens_d": 0.4120706611621361
+  },
+  "by_gender": [
+   {
+    "gender": "Male",
+    "n": 58,
+    "score_mean": 0.6060344828,
+    "score_sd": 0.1354257699,
+    "score_median": 0.625,
+    "pct_above_chance": 0.6896551724,
+    "hours_median": 23.5,
+    "age_median": 21.0,
+    "pearson_r": -0.0048367969,
+    "pearson_p": 0.9712550351,
+    "spearman_rho": 0.1522120604,
+    "spearman_p": 0.2540200863,
+    "effect_per_10h_pts": -0.3095374876,
+    "ci_low_pts": -3.909456028,
+    "ci_high_pts": 3.2903810528,
+    "time_pval": 0.8661689545,
+    "age_coef_pts_per_year": -0.3923646792,
+    "age_pval": 0.0009258569,
+    "age_spearman_rho": -0.1276847075,
+    "age_spearman_p": 0.3394934533,
+    "n_over_40": 4,
+    "age_coef_under40_pts": -0.4589382555,
+    "age_pval_under40": 0.470724285,
+    "r2": 0.0717617561
+   },
+   {
+    "gender": "Female",
+    "n": 44,
+    "score_mean": 0.5545454545,
+    "score_sd": 0.1135157923,
+    "score_median": 0.55,
+    "pct_above_chance": 0.5454545455,
+    "hours_median": 20.0,
+    "age_median": 20.0,
+    "pearson_r": -0.0113415009,
+    "pearson_p": 0.9417523931,
+    "spearman_rho": 0.0285934715,
+    "spearman_p": 0.8538212736,
+    "effect_per_10h_pts": -0.0177828872,
+    "ci_low_pts": -2.6811409973,
+    "ci_high_pts": 2.645575223,
+    "time_pval": 0.9895588469,
+    "age_coef_pts_per_year": -0.055868587,
+    "age_pval": 0.735115839,
+    "age_spearman_rho": -0.0387976701,
+    "age_spearman_p": 0.8025564948,
+    "n_over_40": 5,
+    "age_coef_under40_pts": 0.0789652285,
+    "age_pval_under40": 0.8014050421,
+    "r2": 0.0056150016
+   }
+  ],
+  "robustness": [
+   {
+    "spec": "Main model",
+    "n": 102,
+    "r2": 0.0643564707,
+    "effect_per_10h_pts": -0.0824862599,
+    "ci_low_pts": -2.6734150077,
+    "ci_high_pts": 2.5084424879,
+    "pval": 0.9502454799
+   },
+   {
+    "spec": "Without answers over 100 h",
+    "n": 101,
+    "r2": 0.0916853966,
+    "effect_per_10h_pts": 1.0962487043,
+    "ci_low_pts": -0.5837802515,
+    "ci_high_pts": 2.7762776601,
+    "pval": 0.2009283008
+   },
+   {
+    "spec": "Log of hours",
+    "n": 102,
+    "r2": 0.0642267947,
+    "effect_per_10h_pts": -0.0117855716,
+    "ci_low_pts": -1.3896801673,
+    "ci_high_pts": 1.366109024,
+    "pval": 0.9866247328
+   },
+   {
+    "spec": "Without the imputed row",
+    "n": 101,
+    "r2": 0.0690862498,
+    "effect_per_10h_pts": -0.0812566788,
+    "ci_low_pts": -2.6735923506,
+    "ci_high_pts": 2.5110789931,
+    "pval": 0.9510127723
+   },
+   {
+    "spec": "Time only (no controls)",
+    "n": 102,
+    "r2": 0.0009779644,
+    "effect_per_10h_pts": 0.2190172383,
+    "ci_low_pts": -2.422140369,
+    "ci_high_pts": 2.8601748456,
+    "pval": 0.8708889371
+   }
+  ]
  },
  "participants": [
   {
@@ -979,19 +1087,6 @@
  ],
  "subgroup_models": [
   {
-   "n": 5,
-   "pos": 2,
-   "accuracy": 0.0,
-   "precision": 0.0,
-   "recall": 0.0,
-   "f1": 0.0,
-   "roc_auc": 0.0,
-   "cv_fallback": false,
-   "age_range": "10-15",
-   "gender": "Female",
-   "pr_auc": 0.225
-  },
-  {
    "n": 25,
    "pos": 13,
    "accuracy": 0.48,
@@ -999,7 +1094,6 @@
    "recall": 0.5384615385,
    "f1": 0.5185185185,
    "roc_auc": 0.5961538462,
-   "cv_fallback": false,
    "age_range": "16-20",
    "gender": "Male",
    "pr_auc": 0.6947220385
@@ -1012,7 +1106,6 @@
    "recall": 1.0,
    "f1": 0.8148148148,
    "roc_auc": 0.2,
-   "cv_fallback": false,
    "age_range": "16-20",
    "gender": "Female",
    "pr_auc": 0.5814515661
@@ -1025,7 +1118,6 @@
    "recall": 0.2222222222,
    "f1": 0.3076923077,
    "roc_auc": 0.5555555556,
-   "cv_fallback": false,
    "age_range": "20-25",
    "gender": "Male",
    "pr_auc": 0.4094880763
@@ -1038,73 +1130,18 @@
    "recall": 0.8,
    "f1": 0.6666666667,
    "roc_auc": 0.7333333333,
-   "cv_fallback": false,
    "age_range": "20-25",
    "gender": "Female",
    "pr_auc": 0.8746428571
-  },
-  {
-   "n": 2,
-   "pos": 1,
-   "accuracy": 1.0,
-   "precision": 1.0,
-   "recall": 1.0,
-   "f1": 1.0,
-   "roc_auc": 1.0,
-   "cv_fallback": true,
-   "age_range": "31-40",
-   "gender": "Male",
-   "pr_auc": 1.0
-  },
-  {
-   "n": 3,
-   "pos": 2,
-   "accuracy": 1.0,
-   "precision": 1.0,
-   "recall": 1.0,
-   "f1": 1.0,
-   "roc_auc": 1.0,
-   "cv_fallback": true,
-   "age_range": "31-40",
-   "gender": "Female",
-   "pr_auc": 1.0
-  },
-  {
-   "n": 3,
-   "pos": 2,
-   "accuracy": 0.6666666667,
-   "precision": 0.6666666667,
-   "recall": 1.0,
-   "f1": 0.8,
-   "roc_auc": 1.0,
-   "cv_fallback": true,
-   "age_range": "61-80",
-   "gender": "Female",
-   "pr_auc": 1.0
   }
  ],
- "gender_models": [
-  {
-   "gender": "Female",
-   "n": 44,
-   "pos": 22,
-   "accuracy": 0.571,
-   "precision": 0.588,
-   "recall": 0.811,
-   "f1": 0.679,
-   "roc_auc": 0.43,
-   "pr_auc": 0.669
-  },
-  {
-   "gender": "Male",
-   "n": 58,
-   "pos": 23,
-   "accuracy": 0.569,
-   "precision": 0.52,
-   "recall": 0.408,
-   "f1": 0.438,
-   "roc_auc": 0.593,
-   "pr_auc": 0.572
-  }
- ]
+ "overall_model": {
+  "n": 102,
+  "pos": 60,
+  "accuracy": 0.5784313725,
+  "precision": 0.6164383562,
+  "recall": 0.75,
+  "f1": 0.6766917293,
+  "roc_auc": 0.6259920635
+ }
 }
